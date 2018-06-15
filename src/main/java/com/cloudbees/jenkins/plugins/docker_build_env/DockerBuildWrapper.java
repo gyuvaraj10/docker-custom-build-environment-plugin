@@ -30,12 +30,7 @@ import org.kohsuke.stapler.QueryParameter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,13 +68,15 @@ public class DockerBuildWrapper extends BuildWrapper {
 
     private String cpu;
 
+    private String envFilters;
+
     private final boolean noCache;
 
     @DataBoundConstructor
     public DockerBuildWrapper(DockerImageSelector selector, String dockerInstallation, DockerServerEndpoint dockerHost, String dockerRegistryCredentials, boolean verbose, boolean privileged,
                               List<Volume> volumes, String group, String command,
                               boolean forcePull,
-                              String net, String memory, String cpu, boolean noCache) {
+                              String net, String memory, String cpu, boolean noCache, String envFilters) {
         this.selector = selector;
         this.dockerInstallation = dockerInstallation;
         this.dockerHost = dockerHost;
@@ -94,6 +91,14 @@ public class DockerBuildWrapper extends BuildWrapper {
         this.memory = memory;
         this.cpu = cpu;
         this.noCache = noCache;
+        this.envFilters = envFilters;
+    }
+
+    public List<String> getEnvFilters(){
+        if(envFilters != null && !envFilters.equals("")) {
+            return Arrays.asList(envFilters.split(","));
+        }
+        return Arrays.asList();
     }
 
     public DockerImageSelector getSelector() {
